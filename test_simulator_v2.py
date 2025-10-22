@@ -6,9 +6,6 @@ Script de Teste para o Simulador Orbital de Asteroides v2.0
 
 Este script executa uma bateria completa de testes para verificar
 o funcionamento correto do simulador orbital modular.
-
-Autor: Assistente IA
-Data: 2025
 """
 
 import sys

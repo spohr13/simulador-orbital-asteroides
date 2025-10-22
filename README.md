@@ -74,19 +74,21 @@ python main.py --interativo
 
 ```
 simulador-orbital/
-├── constants.py              # Constantes físicas
-├── celestial_body.py        # Classe CorpoCeleste
-├── simulation_result.py     # Classe ResultadoSimulacao
-├── gravitational_system.py  # Classe SistemaGravitacional
-├── scenarios.py             # Cenários pré-configurados
-├── utils.py                 # Funções utilitárias
-├── main.py                  # Ponto de entrada principal
-├── config.py                # Configurações do sistema
-├── __init__.py              # Módulo principal
-├── test_simulator_v2.py     # Testes automatizados
-├── exemplo_uso.py           # Exemplos de uso
-├── requirements.txt         # Dependências
-└── README.md               # Este arquivo
+├── 🧮 constants.py              # Constantes físicas e configurações
+├── 🌍 celestial_body.py         # Classe CorpoCeleste
+├── 📊 simulation_result.py      # Classe ResultadoSimulacao
+├── ⚡ gravitational_system.py   # Classe SistemaGravitacional
+├── 🎯 scenarios.py              # 7+ cenários pré-configurados
+├── 🛠️ utils.py                  # Funções utilitárias e visualização
+├── 🚀 main.py                   # Interface de linha de comando
+├── ⚙️ config.py                # Sistema de configuração flexível
+├── 📦 __init__.py               # Módulo principal unificado
+├── 🧪 test_simulator_v2.py       # Testes automatizados completos
+├── 📚 exemplo_uso.py            # Exemplos práticos de uso
+├── 📋 requirements.txt          # Dependências do projeto
+├── 📖 README_v2.md              # Documentação detalhada
+├── 🏗️ ESTRUTURA_v2.md           # Guia da arquitetura modular
+└── 📄 LICENSE                   # Licença MIT
 ```
 
 ## 🎯 Cenários Disponíveis

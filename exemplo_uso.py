@@ -7,8 +7,7 @@ EXEMPLO DE USO DO SIMULADOR ORBITAL v2.0
 Este arquivo demonstra como usar o simulador orbital modular
 para diferentes tipos de análises e simulações.
 
-Autor: Assistente IA
-Data: 2025
+
 """
 
 import numpy as np

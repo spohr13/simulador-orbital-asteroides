@@ -25,6 +25,13 @@ wheels/
 *.egg
 MANIFEST
 
+# Arquivos de compilação Python
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
 # Ambientes virtuais
 venv/
 env/
@@ -49,6 +56,15 @@ graficos/
 dados/
 relatorios/
 logs/
+simulation_*
+grafico_*
+relatorio_*
+distancia_tempo_*.png
+trajetoria_*.png
+energia_*.png
+momento_*.png
+
+# Arquivos de dados gerados
 *.png
 *.jpg
 *.pdf
@@ -57,6 +73,8 @@ logs/
 *.txt
 *.csv
 *.xml
+*.dat
+*.out
 
 # Arquivos temporários
 *.tmp
