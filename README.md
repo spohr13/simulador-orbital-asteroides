@@ -4,13 +4,13 @@ Uma ferramenta modular e extensível para simulação de dinâmica orbital, dete
 
 ##  Características Principais
 
-- ** Arquitetura Modular**: Código organizado em módulos especializados
-- ** Múltiplos Cenários**: 7+ cenários pré-configurados (Sistema Solar, Apophis, etc.)
-- ** Física Precisa**: Integração Runge-Kutta 4ª ordem com conservação de energia
-- ** Detecção de Colisão**: Sistema avançado de detecção e análise de impacto
-- ** Visualização Avançada**: Gráficos, animações e relatórios detalhados
-- ** Configuração Flexível**: Sistema de configuração personalizável
-- ** Testes Abrangentes**: Cobertura completa de testes automatizados
+- **Arquitetura Modular**: Código organizado em módulos especializados
+- **Múltiplos Cenários**: 7+ cenários pré-configurados (Sistema Solar, Apophis, etc.)
+- **Física Precisa**: Integração Runge-Kutta 4ª ordem com conservação de energia
+- **Detecção de Colisão**: Sistema avançado de detecção e análise de impacto
+- **Visualização Avançada**: Gráficos, animações e relatórios detalhados
+- **Configuração Flexível**: Sistema de configuração personalizável
+- **Testes Abrangentes**: Cobertura completa de testes automatizados
 
 ##  Instalação Rápida
 
