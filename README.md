@@ -1,22 +1,18 @@
-# 🚀 Simulador Orbital de Asteroides v2.0
-
-[![Python](https://img.shields.io/badge/Python-3.6+-blue.svg)](https://python.org)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-2.0-orange.svg)](https://github.com/seu-usuario/simulador-orbital)
+#  Simulador Orbital de Asteroides v2.0
 
 Uma ferramenta modular e extensível para simulação de dinâmica orbital, detecção de colisões e análise de risco de impacto de asteroides.
 
-## ✨ Características Principais
+##  Características Principais
 
-- **🏗️ Arquitetura Modular**: Código organizado em módulos especializados
-- **🌍 Múltiplos Cenários**: 7+ cenários pré-configurados (Sistema Solar, Apophis, etc.)
-- **🔬 Física Precisa**: Integração Runge-Kutta 4ª ordem com conservação de energia
-- **💥 Detecção de Colisão**: Sistema avançado de detecção e análise de impacto
-- **📊 Visualização Avançada**: Gráficos, animações e relatórios detalhados
-- **⚙️ Configuração Flexível**: Sistema de configuração personalizável
-- **🧪 Testes Abrangentes**: Cobertura completa de testes automatizados
+- ** Arquitetura Modular**: Código organizado em módulos especializados
+- ** Múltiplos Cenários**: 7+ cenários pré-configurados (Sistema Solar, Apophis, etc.)
+- ** Física Precisa**: Integração Runge-Kutta 4ª ordem com conservação de energia
+- ** Detecção de Colisão**: Sistema avançado de detecção e análise de impacto
+- ** Visualização Avançada**: Gráficos, animações e relatórios detalhados
+- ** Configuração Flexível**: Sistema de configuração personalizável
+- ** Testes Abrangentes**: Cobertura completa de testes automatizados
 
-## 🚀 Instalação Rápida
+##  Instalação Rápida
 
 ```bash
 # Clonar o repositório
@@ -30,7 +26,7 @@ pip install -r requirements.txt
 python test_simulator_v2.py
 ```
 
-## 📖 Uso Básico
+##  Uso Básico
 
 ### Exemplo Simples
 ```python
@@ -70,28 +66,28 @@ python main.py --cenario apophis --tempo 2.0 --progresso
 python main.py --interativo
 ```
 
-## 🏗️ Estrutura do Projeto
+##  Estrutura do Projeto
 
 ```
 simulador-orbital/
-├── 🧮 constants.py              # Constantes físicas e configurações
-├── 🌍 celestial_body.py         # Classe CorpoCeleste
-├── 📊 simulation_result.py      # Classe ResultadoSimulacao
-├── ⚡ gravitational_system.py   # Classe SistemaGravitacional
-├── 🎯 scenarios.py              # 7+ cenários pré-configurados
-├── 🛠️ utils.py                  # Funções utilitárias e visualização
-├── 🚀 main.py                   # Interface de linha de comando
-├── ⚙️ config.py                # Sistema de configuração flexível
-├── 📦 __init__.py               # Módulo principal unificado
-├── 🧪 test_simulator_v2.py       # Testes automatizados completos
-├── 📚 exemplo_uso.py            # Exemplos práticos de uso
-├── 📋 requirements.txt          # Dependências do projeto
-├── 📖 README_v2.md              # Documentação detalhada
-├── 🏗️ ESTRUTURA_v2.md           # Guia da arquitetura modular
-└── 📄 LICENSE                   # Licença MIT
+├──  constants.py              # Constantes físicas e configurações
+├──  celestial_body.py         # Classe CorpoCeleste
+├──  simulation_result.py      # Classe ResultadoSimulacao
+├──  gravitational_system.py   # Classe SistemaGravitacional
+├──  scenarios.py              # 7+ cenários pré-configurados
+├──  utils.py                  # Funções utilitárias e visualização
+├──  main.py                   # Interface de linha de comando
+├──  config.py                # Sistema de configuração flexível
+├──  __init__.py               # Módulo principal unificado
+├──  test_simulator_v2.py       # Testes automatizados completos
+├──  exemplo_uso.py            # Exemplos práticos de uso
+├──  requirements.txt          # Dependências do projeto
+├──  README_v2.md              # Documentação detalhada
+├──  ESTRUTURA_v2.md           # Guia da arquitetura modular
+└──  LICENSE                   # Licença MIT
 ```
 
-## 🎯 Cenários Disponíveis
+##  Cenários Disponíveis
 
 | Cenário | Descrição | Uso |
 |---------|-----------|-----|
@@ -103,7 +99,7 @@ simulador-orbital/
 | `teste_conservacao` | Sistema simples | Validação física |
 | `multi_asteroides` | Múltiplos asteroides | Análise estatística |
 
-## 📊 Exemplos de Uso
+##  Exemplos de Uso
 
 ### Análise de Impacto
 ```python
@@ -143,7 +139,7 @@ diretorio = salvar_simulacao(sistema, resultado)
 print(f"Resultados salvos em: {diretorio}")
 ```
 
-## 🧪 Testes
+##  Testes
 
 ```bash
 # Executar todos os testes
@@ -156,7 +152,7 @@ python exemplo_uso.py
 python -c "from test_simulator_v2 import executar_teste_basico; executar_teste_basico()"
 ```
 
-## ⚙️ Configuração
+##  Configuração
 
 ### Configurações Básicas
 ```python
@@ -185,7 +181,7 @@ config.VISUALIZACAO.FIGURA_PADRAO = (15, 10)
 }
 ```
 
-## 🔬 Física Implementada
+##  Física Implementada
 
 - **Gravitação Universal**: Lei de Newton com constante G
 - **Integração Numérica**: Runge-Kutta 4ª ordem
@@ -194,71 +190,22 @@ config.VISUALIZACAO.FIGURA_PADRAO = (15, 10)
 - **Detecção de Colisão**: Múltiplos critérios físicos
 - **Cálculos de Impacto**: Energia, cratera, TNT equivalente
 
-## 📈 Performance
+##  Performance
 
 - **Simulações Rápidas**: Otimizado para performance
 - **Memória Eficiente**: Gerenciamento inteligente de dados
 - **Paralelização**: Suporte para múltiplos núcleos (futuro)
 - **Cache**: Armazenamento de cálculos repetitivos
 
-## 🤝 Contribuindo
 
-1. **Fork** o projeto
-2. **Crie** uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. **Commit** suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. **Push** para a branch (`git push origin feature/AmazingFeature`)
-5. **Abra** um Pull Request
 
-### Adicionando Novos Cenários
-```python
-# Em scenarios.py
-def meu_novo_cenario():
-    sistema = SistemaGravitacional(dt=DT_PADRAO, nome="Meu Cenário")
-    # ... configuração ...
-    return sistema
-```
-
-### Adicionando Novas Análises
-```python
-# Em utils.py
-def minha_analise_personalizada(sistema, resultado):
-    # ... implementar análise ...
-    return dados_analise
-```
-
-## 📚 Documentação
+##  Documentação
 
 - [Guia Completo](README_v2.md) - Documentação detalhada
 - [Estrutura Modular](ESTRUTURA_v2.md) - Arquitetura do projeto
 - [Exemplos de Uso](exemplo_uso.py) - Casos práticos
 - [API Reference](docs/api.md) - Referência da API
 
-## 🐛 Reportando Bugs
-
-Encontrou um bug? Abra uma [issue](https://github.com/seu-usuario/simulador-orbital/issues) com:
-
-- Descrição do problema
-- Passos para reproduzir
-- Versão do Python
-- Sistema operacional
-
-## 📄 Licença
-
-Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
-
-## 👥 Autores
-
-- **Assistente IA** - *Desenvolvimento inicial* - [GitHub](https://github.com/assistente-ia)
-- **Seu Nome** - *Contribuições* - [GitHub](https://github.com/seu-usuario)
-
-## 🙏 Agradecimentos
-
-- Comunidade Python
-- Projetos de código aberto
-- Contribuidores do projeto
 
 ---
 
-**Simulador Orbital de Asteroides v2.0** - Modular, Extensível e Poderoso! 🚀
-
-[⭐ Dê uma estrela](https://github.com/seu-usuario/simulador-orbital) se este projeto te ajudou!
