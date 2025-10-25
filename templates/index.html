@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+
+{% block title %}Início - Simulador Orbital de Asteroides{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Hero Section -->
+    <div class="col-12">
+        <div class="hero-section bg-gradient-primary text-white rounded-3 p-5 mb-5">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-3">
+                        <i class="fas fa-rocket me-3"></i>
+                        Simulador Orbital de Asteroides
+                    </h1>
+                    <p class="lead mb-4">
+                        Simule sistemas gravitacionais complexos e analise cenários de impacto de asteroides 
+                        com precisão científica usando métodos numéricos avançados.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="{{ url_for('simulador') }}" class="btn btn-light btn-lg">
+                            <i class="fas fa-play me-2"></i>Iniciar Simulação
+                        </a>
+                        <a href="{{ url_for('resultados') }}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-chart-line me-2"></i>Ver Resultados
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <i class="fas fa-satellite-dish display-1 opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="text-center mb-5">Recursos do Simulador</h2>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center p-4">
+                <div class="feature-icon bg-primary text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                    <i class="fas fa-calculator fa-2x"></i>
+                </div>
+                <h5 class="card-title">Cálculos Precisos</h5>
+                <p class="card-text text-muted">
+                    Integração numérica de alta precisão usando método de Runge-Kutta de 4ª ordem 
+                    para simulações orbitalmente precisas.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center p-4">
+                <div class="feature-icon bg-success text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                    <i class="fas fa-exclamation-triangle fa-2x"></i>
+                </div>
+                <h5 class="card-title">Detecção de Colisão</h5>
+                <p class="card-text text-muted">
+                    Sistema avançado de detecção de colisão com múltiplos critérios e 
+                    análise de parâmetros de impacto em tempo real.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center p-4">
+                <div class="feature-icon bg-info text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                    <i class="fas fa-chart-line fa-2x"></i>
+                </div>
+                <h5 class="card-title">Visualização Interativa</h5>
+                <p class="card-text text-muted">
+                    Gráficos interativos e animações em tempo real para visualizar 
+                    trajetórias e evolução do sistema gravitacional.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scenarios Section -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="text-center mb-5">Cenários Disponíveis</h2>
+    </div>
+    
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100 border-0 shadow-lg">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="fas fa-meteor me-2"></i>Impacto Direto</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    Simula um cenário de impacto garantido com um asteroide de grande massa 
+                    em rota de colisão com a Terra.
+                </p>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Detecção de colisão</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Cálculo de energia de impacto</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Estimativa de cratera</li>
+                </ul>
+            </div>
+            <div class="card-footer bg-transparent">
+                <a href="{{ url_for('simulador') }}?cenario=impacto_direto" class="btn btn-danger w-100">
+                    <i class="fas fa-play me-2"></i>Simular Impacto
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100 border-0 shadow-lg">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0"><i class="fas fa-asterisk me-2"></i>Apophis 2029</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    Simula a aproximação do asteroide Apophis em 2029, um dos asteroides 
+                    mais monitorados pela NASA.
+                </p>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Parâmetros orbitais reais</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Análise de aproximação</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Parâmetro de impacto</li>
+                </ul>
+            </div>
+            <div class="card-footer bg-transparent">
+                <a href="{{ url_for('simulador') }}?cenario=apophis" class="btn btn-warning w-100">
+                    <i class="fas fa-play me-2"></i>Simular Apophis
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100 border-0 shadow-lg">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-globe me-2"></i>Sistema Solar</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    Simula o sistema Terra-Lua-Sol para estudar dinâmica orbital 
+                    e conservação de energia.
+                </p>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Órbitas estáveis</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Conservação de energia</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Análise de estabilidade</li>
+                </ul>
+            </div>
+            <div class="card-footer bg-transparent">
+                <a href="{{ url_for('simulador') }}?cenario=sistema_solar" class="btn btn-primary w-100">
+                    <i class="fas fa-play me-2"></i>Simular Sistema Solar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Technical Info -->
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 bg-light">
+            <div class="card-body">
+                <h4 class="card-title text-center mb-4">
+                    <i class="fas fa-cogs me-2"></i>Informações Técnicas
+                </h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Constantes Físicas Utilizadas:</h6>
+                        <ul class="list-unstyled small">
+                            <li><strong>G:</strong> 6.67430 × 10⁻¹¹ m³/kg/s²</li>
+                            <li><strong>UA:</strong> 1.496 × 10¹¹ m</li>
+                            <li><strong>Massa do Sol:</strong> 1.989 × 10³⁰ kg</li>
+                            <li><strong>Massa da Terra:</strong> 5.972 × 10²⁴ kg</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Métodos Numéricos:</h6>
+                        <ul class="list-unstyled small">
+                            <li><strong>Integração:</strong> Runge-Kutta 4ª ordem</li>
+                            <li><strong>Detecção de Colisão:</strong> Múltiplos critérios</li>
+                            <li><strong>Validação:</strong> Conservação de energia</li>
+                            <li><strong>Precisão:</strong> Configurável (1h a 5min)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.feature-icon {
+    transition: transform 0.3s ease;
+}
+
+.feature-icon:hover {
+    transform: scale(1.1);
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+}
+</style>
+{% endblock %}

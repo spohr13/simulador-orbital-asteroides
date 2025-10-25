@@ -1,0 +1,364 @@
+{% extends "base.html" %}
+
+{% block title %}Simulador Interativo - Simulador Orbital de Asteroides{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Sidebar de Configuração -->
+    <div class="col-lg-4 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-cog me-2"></i>Configurações da Simulação
+                </h5>
+            </div>
+            <div class="card-body">
+                <form id="simulacao-form">
+                    <!-- Cenário -->
+                    <div class="mb-4">
+                        <label for="cenario" class="form-label fw-bold">Cenário de Simulação</label>
+                        <select class="form-select" id="cenario" name="cenario" required>
+                            <option value="">Selecione um cenário...</option>
+                            <option value="impacto_direto">Impacto Direto</option>
+                            <option value="apophis">Apophis 2029</option>
+                            <option value="sistema_solar">Sistema Solar Básico</option>
+                        </select>
+                        <div class="form-text" id="cenario-descricao"></div>
+                    </div>
+
+                    <!-- Parâmetros de Tempo -->
+                    <div class="mb-4">
+                        <label for="tempo_total" class="form-label fw-bold">Tempo de Simulação (anos)</label>
+                        <input type="number" class="form-control" id="tempo_total" name="tempo_total" 
+                               value="0.1" min="0.01" max="10" step="0.01" required>
+                        <div class="form-text">Tempo total a ser simulado em anos terrestres</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="dt" class="form-label fw-bold">Precisão (passo de tempo)</label>
+                        <select class="form-select" id="dt" name="dt">
+                            <option value="300">Ultra Preciso (5 min)</option>
+                            <option value="900" selected>Preciso (15 min)</option>
+                            <option value="3600">Padrão (1 hora)</option>
+                            <option value="7200">Rápido (2 horas)</option>
+                        </select>
+                        <div class="form-text">Menor passo = maior precisão, mas simulação mais lenta</div>
+                    </div>
+
+                    <!-- Parâmetros do Asteroide (apenas para cenários com asteroide) -->
+                    <div id="parametros-asteroide" style="display: none;">
+                        <hr>
+                        <h6 class="text-primary mb-3">
+                            <i class="fas fa-meteor me-2"></i>Parâmetros do Asteroide
+                        </h6>
+                        
+                        <div class="mb-3">
+                            <label for="massa_asteroide" class="form-label">Massa (kg)</label>
+                            <input type="number" class="form-control" id="massa_asteroide" name="massa_asteroide" 
+                                   value="1e11" min="1e6" max="1e15" step="1e6">
+                            <div class="form-text">Massa do asteroide em quilogramas</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="distancia_inicial" class="form-label">Distância Inicial (raios terrestres)</label>
+                            <input type="number" class="form-control" id="distancia_inicial" name="distancia_inicial" 
+                                   value="20" min="1" max="100" step="1">
+                            <div class="form-text">Distância inicial da Terra em raios terrestres</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="velocidade_aproximacao" class="form-label">Velocidade de Aproximação (m/s)</label>
+                            <input type="number" class="form-control" id="velocidade_aproximacao" name="velocidade_aproximacao" 
+                                   value="20000" min="1000" max="100000" step="1000">
+                            <div class="form-text">Velocidade de aproximação em metros por segundo</div>
+                        </div>
+                    </div>
+
+                    <!-- Botões de Ação -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg" id="btn-simular">
+                            <i class="fas fa-play me-2"></i>Executar Simulação
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" id="btn-reset">
+                            <i class="fas fa-undo me-2"></i>Resetar Parâmetros
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Área de Resultados -->
+    <div class="col-lg-8">
+        <!-- Status da Simulação -->
+        <div class="card border-0 shadow-sm mb-4" id="status-card" style="display: none;">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h6 class="mb-1">Status da Simulação</h6>
+                        <div class="progress mb-2" style="height: 8px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                 role="progressbar" style="width: 0%" id="progress-bar"></div>
+                        </div>
+                        <small class="text-muted" id="status-text">Preparando simulação...</small>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <span class="badge bg-primary" id="status-badge">Aguardando</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resultados da Simulação -->
+        <div class="card border-0 shadow-sm mb-4" id="resultados-card" style="display: none;">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-line me-2"></i>Resultados da Simulação
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row" id="resultados-content">
+                    <!-- Conteúdo será preenchido via JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico da Simulação -->
+        <div class="card border-0 shadow-sm mb-4" id="grafico-card" style="display: none;">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-area me-2"></i>Visualização da Simulação
+                </h5>
+            </div>
+            <div class="card-body text-center">
+                <div id="grafico-container">
+                    <img id="grafico-imagem" class="img-fluid" style="max-height: 500px;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Relatório Detalhado -->
+        <div class="card border-0 shadow-sm" id="relatorio-card" style="display: none;">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-file-alt me-2"></i>Relatório Detalhado
+                </h5>
+            </div>
+            <div class="card-body">
+                <pre id="relatorio-texto" class="bg-light p-3 rounded" style="max-height: 400px; overflow-y: auto; font-size: 0.9em;"></pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('simulacao-form');
+    const cenarioSelect = document.getElementById('cenario');
+    const parametrosAsteroide = document.getElementById('parametros-asteroide');
+    const statusCard = document.getElementById('status-card');
+    const resultadosCard = document.getElementById('resultados-card');
+    const graficoCard = document.getElementById('grafico-card');
+    const relatorioCard = document.getElementById('relatorio-card');
+    
+    // Descrições dos cenários
+    const descricoesCenarios = {
+        'impacto_direto': 'Simula um cenário de impacto garantido com um asteroide de grande massa em rota de colisão com a Terra.',
+        'apophis': 'Simula a aproximação do asteroide Apophis em 2029, um dos asteroides mais monitorados pela NASA.',
+        'sistema_solar': 'Simula o sistema Terra-Lua-Sol para estudar dinâmica orbital e conservação de energia.'
+    };
+    
+    // Mostrar/ocultar parâmetros do asteroide
+    cenarioSelect.addEventListener('change', function() {
+        const descricao = document.getElementById('cenario-descricao');
+        descricao.textContent = descricoesCenarios[this.value] || '';
+        
+        if (this.value === 'impacto_direto' || this.value === 'apophis') {
+            parametrosAsteroide.style.display = 'block';
+        } else {
+            parametrosAsteroide.style.display = 'none';
+        }
+    });
+    
+    // Resetar formulário
+    document.getElementById('btn-reset').addEventListener('click', function() {
+        form.reset();
+        parametrosAsteroide.style.display = 'none';
+        statusCard.style.display = 'none';
+        resultadosCard.style.display = 'none';
+        graficoCard.style.display = 'none';
+        relatorioCard.style.display = 'none';
+    });
+    
+    // Submissão do formulário
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        executarSimulacao();
+    });
+    
+    function executarSimulacao() {
+        const formData = new FormData(form);
+        const dados = Object.fromEntries(formData.entries());
+        
+        // Mostrar status
+        statusCard.style.display = 'block';
+        resultadosCard.style.display = 'none';
+        graficoCard.style.display = 'none';
+        relatorioCard.style.display = 'none';
+        
+        // Mostrar modal de loading
+        const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+        loadingModal.show();
+        
+        // Executar simulação
+        fetch('/api/simular', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dados)
+        })
+        .then(response => response.json())
+        .then(data => {
+            loadingModal.hide();
+            
+            if (data.status === 'sucesso') {
+                mostrarResultados(data);
+            } else {
+                mostrarErro(data.mensagem);
+            }
+        })
+        .catch(error => {
+            loadingModal.hide();
+            mostrarErro('Erro na comunicação com o servidor: ' + error.message);
+        });
+    }
+    
+    function mostrarResultados(data) {
+        // Ocultar status
+        statusCard.style.display = 'none';
+        
+        // Mostrar resultados
+        const resultado = data.resultado;
+        const resultadosContent = document.getElementById('resultados-content');
+        
+        // Verificar se CONSTANTES está definido
+        const R_TERRA = (typeof CONSTANTES !== 'undefined' && CONSTANTES.R_TERRA) ? CONSTANTES.R_TERRA : 6.371e6;
+        
+        let html = `
+            <div class="col-md-6 mb-3">
+                <div class="card border-0 bg-light">
+                    <div class="card-body text-center">
+                        <h6 class="card-title text-primary">Distância Mínima</h6>
+                        <h4 class="text-primary">${(resultado.distancia_minima / 1000).toFixed(2)} km</h4>
+                        <small class="text-muted">${(resultado.distancia_minima / R_TERRA).toFixed(2)} raios terrestres</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card border-0 bg-light">
+                    <div class="card-body text-center">
+                        <h6 class="card-title text-info">Velocidade Relativa</h6>
+                        <h4 class="text-info">${(resultado.velocidade_relativa_minima / 1000).toFixed(2)} km/s</h4>
+                        <small class="text-muted">No momento da aproximação</small>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        if (resultado.houve_colisao) {
+            html += `
+                <div class="col-12 mb-3">
+                    <div class="alert alert-danger">
+                        <h5><i class="fas fa-exclamation-triangle me-2"></i>COLISÃO DETECTADA!</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <strong>Energia de Impacto:</strong><br>
+                                ${(resultado.energia_impacto / 1e15).toFixed(2)} × 10¹⁵ J
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Equivalente TNT:</strong><br>
+                                ${resultado.equivalente_tnt.toFixed(2)} megatons
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Raio da Cratera:</strong><br>
+                                ${(resultado.raio_cratera / 1000).toFixed(2)} km
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else if (resultado.aproximacao_perigosa) {
+            html += `
+                <div class="col-12 mb-3">
+                    <div class="alert alert-warning">
+                        <h5><i class="fas fa-exclamation-circle me-2"></i>Aproximação Perigosa Detectada</h5>
+                        <p class="mb-0">O asteroide passou perigosamente próximo da Terra, mas não houve colisão.</p>
+                    </div>
+                </div>
+            `;
+        } else {
+            html += `
+                <div class="col-12 mb-3">
+                    <div class="alert alert-success">
+                        <h5><i class="fas fa-check-circle me-2"></i>Nenhuma Colisão Detectada</h5>
+                        <p class="mb-0">O asteroide passou a uma distância segura da Terra.</p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        resultadosContent.innerHTML = html;
+        resultadosCard.style.display = 'block';
+        
+        // Carregar gráfico
+        carregarGrafico(data.sim_id);
+        
+        // Mostrar relatório
+        document.getElementById('relatorio-texto').textContent = data.relatorio;
+        relatorioCard.style.display = 'block';
+    }
+    
+    function carregarGrafico(simId) {
+        fetch(`/api/grafico/${simId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.grafico) {
+                document.getElementById('grafico-imagem').src = 'data:image/png;base64,' + data.grafico;
+                graficoCard.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao carregar gráfico:', error);
+        });
+    }
+    
+    function mostrarErro(mensagem) {
+        const alertContainer = document.getElementById('alert-container');
+        alertContainer.innerHTML = `
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                ${mensagem}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+        
+        // Ocultar cards
+        statusCard.style.display = 'none';
+        resultadosCard.style.display = 'none';
+        graficoCard.style.display = 'none';
+        relatorioCard.style.display = 'none';
+    }
+    
+    // Carregar cenário da URL se especificado
+    const urlParams = new URLSearchParams(window.location.search);
+    const cenarioUrl = urlParams.get('cenario');
+    if (cenarioUrl) {
+        cenarioSelect.value = cenarioUrl;
+        cenarioSelect.dispatchEvent(new Event('change'));
+    }
+});
+</script>
+{% endblock %}

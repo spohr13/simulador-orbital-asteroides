@@ -1,0 +1,390 @@
+{% extends "base.html" %}
+
+{% block title %}Resultados - Simulador Orbital de Asteroides{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-chart-line me-2"></i>Resultados das Simulações</h2>
+            <button class="btn btn-primary" onclick="carregarSimulacoes()">
+                <i class="fas fa-sync me-2"></i>Atualizar Lista
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Lista de Simulações -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>Simulações Realizadas
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="lista-simulacoes">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Carregando simulações...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detalhes da Simulação Selecionada -->
+<div class="row" id="detalhes-container" style="display: none;">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Detalhes da Simulação
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="detalhes-conteudo">
+                    <!-- Conteúdo será preenchido via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gráfico da Simulação Selecionada -->
+<div class="row mt-4" id="grafico-container" style="display: none;">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-area me-2"></i>Visualização da Simulação
+                </h5>
+            </div>
+            <div class="card-body text-center">
+                <div id="grafico-imagem-container">
+                    <img id="grafico-imagem" class="img-fluid" style="max-height: 600px;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Relatório da Simulação Selecionada -->
+<div class="row mt-4" id="relatorio-container" style="display: none;">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-file-alt me-2"></i>Relatório Detalhado
+                </h5>
+            </div>
+            <div class="card-body">
+                <pre id="relatorio-texto" class="bg-light p-3 rounded" style="max-height: 500px; overflow-y: auto; font-size: 0.9em;"></pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let simulacoes = [];
+let simulacaoSelecionada = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    carregarSimulacoes();
+});
+
+function carregarSimulacoes() {
+    const listaContainer = document.getElementById('lista-simulacoes');
+    
+    // Mostrar loading
+    listaContainer.innerHTML = `
+        <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+            <p class="mt-2 text-muted">Carregando simulações...</p>
+        </div>
+    `;
+    
+    fetch('/api/lista_simulacoes')
+    .then(response => response.json())
+    .then(data => {
+        simulacoes = data.simulacoes;
+        exibirListaSimulacoes();
+    })
+    .catch(error => {
+        listaContainer.innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Erro ao carregar simulações: ${error.message}
+            </div>
+        `;
+    });
+}
+
+function exibirListaSimulacoes() {
+    const listaContainer = document.getElementById('lista-simulacoes');
+    
+    if (simulacoes.length === 0) {
+        listaContainer.innerHTML = `
+            <div class="text-center py-4">
+                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">Nenhuma simulação encontrada</h5>
+                <p class="text-muted">Execute uma simulação para ver os resultados aqui.</p>
+                <a href="/simulador" class="btn btn-primary">
+                    <i class="fas fa-play me-2"></i>Ir para Simulador
+                </a>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '<div class="row">';
+    
+    simulacoes.forEach((sim, index) => {
+        const data = new Date(sim.timestamp);
+        const statusBadge = sim.houve_colisao ? 
+            '<span class="badge bg-danger">Colisão</span>' : 
+            '<span class="badge bg-success">Seguro</span>';
+        
+        const cenarioNome = {
+            'impacto_direto': 'Impacto Direto',
+            'apophis': 'Apophis 2029',
+            'sistema_solar': 'Sistema Solar'
+        }[sim.cenario] || sim.cenario;
+        
+        html += `
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card h-100 border-0 shadow-sm simulacao-card" 
+                     style="cursor: pointer;" 
+                     onclick="selecionarSimulacao('${sim.sim_id}')">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="card-title mb-0">${cenarioNome}</h6>
+                            ${statusBadge}
+                        </div>
+                        <p class="card-text small text-muted mb-2">
+                            <i class="fas fa-clock me-1"></i>
+                            ${data.toLocaleString('pt-BR')}
+                        </p>
+                        <p class="card-text small mb-0">
+                            <strong>Distância mínima:</strong> ${(sim.distancia_minima / 1000).toFixed(2)} km
+                        </p>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    listaContainer.innerHTML = html;
+}
+
+function selecionarSimulacao(simId) {
+    // Remover seleção anterior
+    document.querySelectorAll('.simulacao-card').forEach(card => {
+        card.classList.remove('border-primary', 'bg-light');
+    });
+    
+    // Adicionar seleção atual
+    event.currentTarget.classList.add('border-primary', 'bg-light');
+    
+    simulacaoSelecionada = simId;
+    
+    // Carregar detalhes
+    carregarDetalhesSimulacao(simId);
+}
+
+function carregarDetalhesSimulacao(simId) {
+    const detalhesContainer = document.getElementById('detalhes-container');
+    const graficoContainer = document.getElementById('grafico-container');
+    const relatorioContainer = document.getElementById('relatorio-container');
+    
+    // Mostrar loading
+    detalhesContainer.style.display = 'block';
+    document.getElementById('detalhes-conteudo').innerHTML = `
+        <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+            <p class="mt-2 text-muted">Carregando detalhes...</p>
+        </div>
+    `;
+    
+    fetch(`/api/resultados/${simId}`)
+    .then(response => response.json())
+    .then(data => {
+        exibirDetalhesSimulacao(data);
+        carregarGraficoSimulacao(simId);
+    })
+    .catch(error => {
+        document.getElementById('detalhes-conteudo').innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Erro ao carregar detalhes: ${error.message}
+            </div>
+        `;
+    });
+}
+
+function exibirDetalhesSimulacao(data) {
+    const resultado = data.resultado;
+    const parametros = data.parametros;
+    
+    let html = `
+        <div class="row">
+            <div class="col-md-6">
+                <h6 class="text-primary mb-3">Parâmetros da Simulação</h6>
+                <ul class="list-unstyled">
+                    <li><strong>Cenário:</strong> ${parametros.cenario}</li>
+                    <li><strong>Tempo total:</strong> ${parametros.tempo_total} anos</li>
+                    <li><strong>Passo de tempo:</strong> ${parametros.dt} segundos</li>
+    `;
+    
+    if (parametros.massa_asteroide) {
+        html += `
+            <li><strong>Massa do asteroide:</strong> ${(parametros.massa_asteroide / 1e9).toFixed(1)} × 10⁹ kg</li>
+            <li><strong>Distância inicial:</strong> ${parametros.distancia_inicial} raios terrestres</li>
+            <li><strong>Velocidade aproximação:</strong> ${parametros.velocidade_aproximacao} m/s</li>
+        `;
+    }
+    
+    html += `
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h6 class="text-success mb-3">Resultados Principais</h6>
+                <ul class="list-unstyled">
+                    <li><strong>Distância mínima:</strong> ${(resultado.distancia_minima / 1000).toFixed(2)} km</li>
+                    <li><strong>Distância da superfície:</strong> ${(resultado.distancia_superficie / 1000).toFixed(2)} km</li>
+                    <li><strong>Velocidade relativa:</strong> ${(resultado.velocidade_relativa_minima / 1000).toFixed(2)} km/s</li>
+                    <li><strong>Tempo de aproximação:</strong> ${(resultado.tempo_minima / 365.25 / 24 / 3600).toFixed(4)} anos</li>
+                    <li><strong>Número de passos:</strong> ${resultado.numero_passos.toLocaleString()}</li>
+                </ul>
+            </div>
+        </div>
+    `;
+    
+    if (resultado.houve_colisao) {
+        html += `
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="alert alert-danger">
+                        <h6><i class="fas fa-exclamation-triangle me-2"></i>COLISÃO DETECTADA!</h6>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Energia de Impacto:</strong><br>
+                                ${(resultado.energia_impacto / 1e15).toFixed(2)} × 10¹⁵ J
+                            </div>
+                            <div class="col-md-3">
+                                <strong>Equivalente TNT:</strong><br>
+                                ${resultado.equivalente_tnt.toFixed(2)} megatons
+                            </div>
+                            <div class="col-md-3">
+                                <strong>Raio da Cratera:</strong><br>
+                                ${(resultado.raio_cratera / 1000).toFixed(2)} km
+                            </div>
+                            <div class="col-md-3">
+                                <strong>Profundidade:</strong><br>
+                                ${(resultado.profundidade_cratera / 1000).toFixed(2)} km
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (resultado.aproximacao_perigosa) {
+        html += `
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="alert alert-warning">
+                        <h6><i class="fas fa-exclamation-circle me-2"></i>Aproximação Perigosa Detectada</h6>
+                        <p class="mb-0">O asteroide passou perigosamente próximo da Terra, mas não houve colisão.</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else {
+        html += `
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="alert alert-success">
+                        <h6><i class="fas fa-check-circle me-2"></i>Nenhuma Colisão Detectada</h6>
+                        <p class="mb-0">O asteroide passou a uma distância segura da Terra.</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    document.getElementById('detalhes-conteudo').innerHTML = html;
+}
+
+function carregarGraficoSimulacao(simId) {
+    const graficoContainer = document.getElementById('grafico-container');
+    const relatorioContainer = document.getElementById('relatorio-container');
+    
+    // Mostrar loading no gráfico
+    graficoContainer.style.display = 'block';
+    document.getElementById('grafico-imagem-container').innerHTML = `
+        <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+            <p class="mt-2 text-muted">Gerando gráfico...</p>
+        </div>
+    `;
+    
+    // Carregar gráfico
+    fetch(`/api/grafico/${simId}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.grafico) {
+            document.getElementById('grafico-imagem-container').innerHTML = 
+                `<img id="grafico-imagem" class="img-fluid" style="max-height: 600px;" src="data:image/png;base64,${data.grafico}">`;
+        } else {
+            document.getElementById('grafico-imagem-container').innerHTML = 
+                '<div class="alert alert-warning">Gráfico não disponível</div>';
+        }
+    })
+    .catch(error => {
+        document.getElementById('grafico-imagem-container').innerHTML = 
+            '<div class="alert alert-danger">Erro ao carregar gráfico</div>';
+    });
+    
+    // Carregar relatório
+    fetch(`/api/resultados/${simId}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.relatorio) {
+            document.getElementById('relatorio-texto').textContent = data.relatorio;
+            relatorioContainer.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao carregar relatório:', error);
+    });
+}
+</script>
+
+<style>
+.simulacao-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.simulacao-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+}
+
+.simulacao-card.border-primary {
+    border: 2px solid #0d6efd !important;
+}
+</style>
+{% endblock %}
