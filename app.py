@@ -5,6 +5,7 @@
 from flask import Flask, render_template, request, jsonify, send_file
 import json
 import os
+import math
 import numpy as np
 from datetime import datetime
 import matplotlib
@@ -19,6 +20,18 @@ from asteroid_simulator_fixed import (
     criar_sistema_impacto_melhorado, criar_sistema_apophis_melhorado,
     M_SOL, M_TERRA, R_TERRA, UA, ANOS_EM_SEGUNDOS
 )
+
+def safe_float(value):
+    """Converte valores para float seguro para JSON."""
+    if value is None:
+        return None
+    if isinstance(value, (int, float)):
+        if math.isinf(value):
+            return 1e10 if value > 0 else -1e10  # Substituir inf por número grande
+        if math.isnan(value):
+            return 0.0  # Substituir NaN por 0
+        return float(value)
+    return float(value) if value is not None else 0.0
 from config import obter_config_padrao, ConfigSimulacao, ConfigCenarios
 from constants import *
 
@@ -134,16 +147,16 @@ def executar_simulacao():
             'status': 'sucesso',
             'resultado': {
                 'houve_colisao': resultado.houve_colisao,
-                'distancia_minima': float(resultado.distancia_minima),
-                'distancia_superficie': float(resultado.distancia_superficie),
-                'tempo_minima': float(resultado.tempo_minima),
-                'velocidade_relativa_minima': float(resultado.velocidade_relativa_minima),
+                'distancia_minima': safe_float(resultado.distancia_minima),
+                'distancia_superficie': safe_float(resultado.distancia_superficie),
+                'tempo_minima': safe_float(resultado.tempo_minima),
+                'velocidade_relativa_minima': safe_float(resultado.velocidade_relativa_minima),
                 'aproximacao_perigosa': resultado.aproximacao_perigosa,
-                'energia_impacto': float(resultado.energia_impacto) if resultado.houve_colisao else 0,
-                'equivalente_tnt': float(resultado.equivalente_tnt) if resultado.houve_colisao else 0,
-                'raio_cratera': float(resultado.raio_cratera) if resultado.houve_colisao else 0,
-                'profundidade_cratera': float(resultado.profundidade_cratera) if resultado.houve_colisao else 0,
-                'tempo_simulacao': float(resultado.tempo_simulacao),
+                'energia_impacto': safe_float(resultado.energia_impacto) if resultado.houve_colisao else 0,
+                'equivalente_tnt': safe_float(resultado.equivalente_tnt) if resultado.houve_colisao else 0,
+                'raio_cratera': safe_float(resultado.raio_cratera) if resultado.houve_colisao else 0,
+                'profundidade_cratera': safe_float(resultado.profundidade_cratera) if resultado.houve_colisao else 0,
+                'tempo_simulacao': safe_float(resultado.tempo_simulacao),
                 'numero_passos': resultado.numero_passos
             },
             'relatorio': resultado.gerar_relatorio()
@@ -250,7 +263,7 @@ def listar_simulacoes():
             'cenario': dados['parametros'].get('cenario', 'desconhecido'),
             'timestamp': dados['timestamp'],
             'houve_colisao': dados['resultado'].houve_colisao,
-            'distancia_minima': float(dados['resultado'].distancia_minima)
+            'distancia_minima': safe_float(dados['resultado'].distancia_minima)
         })
     
     return jsonify({'simulacoes': lista})
