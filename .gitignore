@@ -1,43 +1,17 @@
-# ==============================================================================
-# .gitignore para Simulador Orbital de Asteroides
-# ==============================================================================
-
-# Arquivos Python
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
 *.egg-info/
-.installed.cfg
 *.egg
-MANIFEST
-
-# Arquivos de compilação Python
-*.pyc
-*.pyo
-*.pyd
-.Python
-*.so
+dist/
+build/
+*.whl
 
 # Ambientes virtuais
 venv/
 env/
-ENV/
-env.bak/
-venv.bak/
 .venv/
 
 # IDEs
@@ -47,61 +21,17 @@ venv.bak/
 *.swo
 *~
 
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# Arquivos de resultado do simulador
-resultados/
-graficos/
-dados/
-relatorios/
-logs/
-simulation_*
-grafico_*
-relatorio_*
-distancia_tempo_*.png
-trajetoria_*.png
-energia_*.png
-momento_*.png
-
-# Arquivos de dados gerados
-*.png
-*.jpg
-*.pdf
-*.gif
-*.json
-*.txt
-*.csv
-*.xml
-*.dat
-*.out
-
-# Arquivos temporários
-*.tmp
-*.temp
+# OS
 .DS_Store
 Thumbs.db
 
-# Arquivos de configuração local
-config_personalizada.json
-config_local.json
+# Simulação - apenas outputs gerados
+simulation_output_*
 
-# Arquivos de teste gerados
-test_output/
-simulation_*
-grafico_*
-relatorio_*
+# Logs
+*.log
 
-# Arquivos de backup
-*.bak
-*.backup
-*_backup.*
-
-# Arquivos de sistema
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+# Segurança
+.env
+*.pem
+*.key

@@ -46,8 +46,8 @@ from main import (
 
 # Versão do simulador
 __version__ = "2.0"
-__author__ = "Assistente IA"
-__date__ = "2025"
+__author__ = "Valentina Spohr"
+__date__ = "2025-2026"
 
 # Informações do módulo
 __name__ = "simulador_orbital"
