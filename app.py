@@ -15,11 +15,12 @@ import io
 import base64
 
 # Importar módulos do simulador
-from asteroid_simulator_fixed import (
-    SistemaGravitacional, CorpoCeleste, ResultadoSimulacao,
-    criar_sistema_impacto_melhorado, criar_sistema_apophis_melhorado,
-    M_SOL, M_TERRA, R_TERRA, UA, ANOS_EM_SEGUNDOS
-)
+from celestial_body import CorpoCeleste
+from gravitational_system import SistemaGravitacional
+from simulation_result import ResultadoSimulacao
+from scenarios import criar_sistema_impacto_direto, criar_sistema_apophis
+from constants import *
+from config import obter_config_padrao, ConfigSimulacao, ConfigCenarios
 
 def safe_float(value):
     """Converte valores para float seguro para JSON."""
@@ -32,8 +33,6 @@ def safe_float(value):
             return 0.0  # Substituir NaN por 0
         return float(value)
     return float(value) if value is not None else 0.0
-from config import obter_config_padrao, ConfigSimulacao, ConfigCenarios
-from constants import *
 
 app = Flask(__name__)
 app.secret_key = 'simulador_orbital_2025'
@@ -114,12 +113,12 @@ def executar_simulacao():
         
         # Criar sistema baseado no cenário
         if cenario == 'impacto_direto':
-            sistema = criar_sistema_impacto_melhorado()
+            sistema = criar_sistema_impacto_direto()
             # Ajustar parâmetros do asteroide
             asteroide = next(c for c in sistema.corpos if c.nome == "Asteroide")
             asteroide.massa = massa_asteroide
         elif cenario == 'apophis':
-            sistema = criar_sistema_apophis_melhorado()
+            sistema = criar_sistema_apophis()
         else:  # sistema_solar
             sistema = criar_sistema_solar_basico()
         
